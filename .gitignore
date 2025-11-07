@@ -1,0 +1,42 @@
+# === Node ===
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# === Build outputs ===
+dist/
+build/
+out/
+
+# === Vite ===
+*.local
+.vite/
+vite.config.ts.timestamp-*
+
+# === TypeScript ===
+*.tsbuildinfo
+
+# === Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === Environment files ===
+.env
+.env.*.local
+!.env.example
+
+# === Husky ===
+.husky/_/ # script auto-généré, inutile à versionner
+
+
+# === Workspaces (client/server) ===
+client/node_modules/
+client/dist/
+server/node_modules/
+server/dist/
