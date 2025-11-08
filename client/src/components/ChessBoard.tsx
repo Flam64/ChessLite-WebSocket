@@ -1,5 +1,5 @@
 import { Chessboard } from "react-chessboard";
-import { useChessGame } from "../hooks/useChessGame"; // chemin vers ton hook
+import { useChessGame } from "../hooks/useChessGame";
 
 export default function ChessBoard() {
   const { game, makeMove } = useChessGame();
