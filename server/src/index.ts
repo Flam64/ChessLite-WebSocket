@@ -19,13 +19,15 @@ wss.on("connection", (ws) => {
   console.log("Client connected");
 
   ws.on("message", (message) => {
-    console.log("Received:", message.toString());
+    ws.on("message", (message) => {
+      const data = JSON.parse(message.toString());
 
-    // Echo du message à tous les clients
-    wss.clients.forEach((client) => {
-      if (client.readyState === ws.OPEN) {
-        client.send(`Server echo: ${message}`);
-      }
+      // Propager le FEN à tous les clients
+      wss.clients.forEach((client) => {
+        if (client.readyState === ws.OPEN) {
+          client.send(JSON.stringify({ fen: data.fen }));
+        }
+      });
     });
   });
 

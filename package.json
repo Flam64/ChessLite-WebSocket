@@ -1,12 +1,8 @@
 {
   "name": "chesslite-websocket",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
-    "start:dev": "concurrently -c \"blue,green\" -n \"SERVER,CLIENT\" \"npm run dev -w server\" \"npm run dev -w client\"",
+    "dev": "concurrently -n CLIENT,SERVER -c cyan,magenta \"npm --prefix client run dev\" \"npm --prefix server run dev\"",
     "lint": "eslint client server --ext ts,tsx,js,jsx",
     "lint:fix": "eslint client server --ext ts,tsx,js,jsx --fix",
     "prepare": "husky"
