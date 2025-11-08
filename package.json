@@ -6,18 +6,21 @@
     "server"
   ],
   "scripts": {
+    "start:dev": "concurrently -c \"blue,green\" -n \"SERVER,CLIENT\" \"npm run dev -w server\" \"npm run dev -w client\"",
     "lint": "eslint client server --ext ts,tsx,js,jsx",
     "lint:fix": "eslint client server --ext ts,tsx,js,jsx --fix",
     "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "concurrently": "^9.2.1",
     "eslint": "^9.39.1",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^9.0.0",
     "lint-staged": "^15.5.2",
+    "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "typescript-eslint": "^8.46.3"
   },

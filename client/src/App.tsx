@@ -1,33 +1,47 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [messages, setMessages] = useState<string[]>([]);
+  const [input, setInput] = useState("");
+
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:3000");
+
+    ws.onopen = () => console.log("Connected to WebSocket server modif");
+    ws.onmessage = (event) => {
+      setMessages((prev) => [...prev, event.data]);
+    };
+
+    ws.onclose = () => console.log("WebSocket connection closed");
+
+    return () => ws.close();
+  }, []);
+
+  const sendMessage = () => {
+    const ws = new WebSocket("ws://localhost:3000");
+    ws.onopen = () => ws.send(input);
+    setInput("");
+  };
 
   return (
-    <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <h1 className="text-4xl font-bold text-blue-600">Hello Tailwind!</h1>
-      </div>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">ChessLite WebSocket Test</h1>
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        className="border p-2 mr-2"
+      />
+      <button onClick={sendMessage} className="bg-blue-500 text-white p-2">
+        Send
+      </button>
+
+      <ul className="mt-4">
+        {messages.map((msg, i) => (
+          <li key={i}>{msg}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
