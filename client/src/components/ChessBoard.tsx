@@ -16,6 +16,7 @@ export default function ChessBoard() {
     prevMove,
     goToStart,
     goToEnd,
+    undoLastMove,
   } = useChessGame();
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -78,8 +79,14 @@ export default function ChessBoard() {
       <div className="w-72 shadow rounded p-4 h-[600px]  flex flex-col">
         {/* Boutons navigation */}
         <div className="flex gap-2 mb-4 justify-center">
+          <button
+            onClick={undoLastMove}
+            className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600"
+          >
+            ↩{" "}
+          </button>
           <button onClick={goToStart} className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600">
-            ⏮
+            ◀◀
           </button>
           <button onClick={prevMove} className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600">
             ◀
@@ -88,7 +95,7 @@ export default function ChessBoard() {
             ▶
           </button>
           <button onClick={goToEnd} className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600">
-            ⏭
+            ▶▶
           </button>
         </div>
 
