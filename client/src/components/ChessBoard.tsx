@@ -79,21 +79,32 @@ export default function ChessBoard() {
       <div className="w-72 shadow rounded p-4 h-[600px]  flex flex-col">
         {/* Boutons navigation */}
         <div className="flex gap-2 mb-4 justify-center">
+          {/* Bouton annuler dernier coup */}
           <button
             onClick={undoLastMove}
-            className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600"
+            disabled={moves.length === 0}
+            className={`px-3 py-1 rounded transition
+    ${
+      moves.length === 0
+        ? "bg-gray-500 cursor-not-allowed opacity-50"
+        : "bg-gray-700 hover:bg-gray-600"
+    }`}
           >
-            ↩{" "}
+            ↩
           </button>
+          {/* Bouton aller au premier coup */}
           <button onClick={goToStart} className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600">
             ◀◀
           </button>
+          {/* Bouton coup précédent */}
           <button onClick={prevMove} className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600">
             ◀
           </button>
+          {/* Bouton coup suivant */}
           <button onClick={nextMove} className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600">
             ▶
           </button>
+          {/* Bouton aller au dernier coup */}
           <button onClick={goToEnd} className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600">
             ▶▶
           </button>
