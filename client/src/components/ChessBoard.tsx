@@ -1,9 +1,9 @@
 // src/components/ChessBoard.tsx
-import { useMemo, useCallback, useRef, useEffect } from "react";
+import { useMemo, useCallback, useRef, useEffect, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { useChessGame } from "../hooks/useChessGame";
 import { Chess, Square, Move } from "chess.js";
-import { useState } from "react";
+import type React from "react";
 
 export default function ChessBoard() {
   const {
