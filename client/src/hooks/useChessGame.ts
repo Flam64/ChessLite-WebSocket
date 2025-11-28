@@ -45,6 +45,27 @@ export function useChessGame() {
     return true;
   };
 
+  // anuller le dernier coup
+  const undoLastMove = () => {
+    setMoves((prev) => {
+      if (prev.length === 0) return prev;
+
+      const newMoves = prev.slice(0, -1);
+
+      setCurrentMoveIndex(newMoves.length);
+
+      // mettre à jour lastMove
+      if (newMoves.length > 0) {
+        const m = newMoves[newMoves.length - 1];
+        setLastMove({ from: m.from, to: m.to });
+      } else {
+        setLastMove(null);
+      }
+
+      return newMoves;
+    });
+  };
+
   /** Navigation */
   const prevMove = () => setCurrentMoveIndex((i) => Math.max(0, i - 1));
 
@@ -76,5 +97,6 @@ export function useChessGame() {
     goToStart,
     goToEnd,
     goToMove,
+    undoLastMove,
   };
 }
