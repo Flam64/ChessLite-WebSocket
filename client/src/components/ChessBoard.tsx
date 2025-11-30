@@ -20,66 +20,97 @@ export default function ChessBoard() {
     undoLastMove,
   } = useChessGame();
 
+  type PossibleMove = {
+    isCapture: boolean;
+  };
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isUndoing, setIsUndoing] = useState(false);
-  const [possibleMoves, setPossibleMoves] = useState<Record<string, React.CSSProperties>>({});
+  const [possibleMoves, setPossibleMoves] = useState<Record<string, PossibleMove>>({});
+
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
 
   // déterminer les coups possible lors du click sur un pièce (case)
   const handleSquareClick = useCallback(
     (square: Square) => {
-      //ignorer un pièce adverse
-      const piece = game.get(square);
-      if (!piece || piece.color !== game.turn()) {
+      const sq = square as Square;
+      const piece = game.get(sq);
+
+      // Si on clique sur une case contenant la pièce du joueur -> sélectionner
+      if (piece && piece.color === game.turn()) {
+        // toggle selection
+        if (sq === selectedSquare) {
+          setSelectedSquare(null);
+          setPossibleMoves({});
+          return;
+        }
+
+        const moves = game.moves({ square: sq, verbose: true }) as Move[];
+        if (moves.length === 0) {
+          setSelectedSquare(null);
+          setPossibleMoves({});
+          return;
+        }
+
+        const nextPossibleMoves: Record<string, PossibleMove> = {};
+        for (const m of moves) nextPossibleMoves[m.to] = { isCapture: !!m.captured };
+
+        setSelectedSquare(sq);
+        setPossibleMoves(nextPossibleMoves);
+        return;
+      }
+
+      // Si on a déjà une sélection, tenter de jouer vers la case cliquée
+      if (selectedSquare) {
+        const from = selectedSquare as Square;
+        const to = square as Square;
+
+        // sicase non valide
+        if (!possibleMoves[to]) {
+          setSelectedSquare(null);
+          setPossibleMoves({});
+          return;
+        }
+
+        // coup valide
+        makeMove(from, to);
+        // nettoyer l'UI (si ok ou non, on réinitialise la sélection)
         setSelectedSquare(null);
         setPossibleMoves({});
         return;
       }
 
-      if (square === selectedSquare) {
-        setSelectedSquare(null);
-        setPossibleMoves({});
-        return;
-      }
-
-      // Coups légaux depuis cette case
-      const moves = game.moves({ square, verbose: true }) as Move[];
-
-      // Pas de coups → on ne fait rien
-      if (moves.length === 0) {
-        setSelectedSquare(null);
-        setPossibleMoves({});
-        return;
-      }
-
-      //const highlights: Record<string, any> = {};
-      const highlights: Record<string, React.CSSProperties> = {};
-
-      moves.forEach((move) => {
-        highlights[move.to] = {
-          background: move.captured
-            ? "radial-gradient(circle, rgba(253, 0, 0, 0.6) 70%, transparent 75%)"
-            : "radial-gradient(circle, rgba(239, 140, 2, 0.85) 10%, transparent 15%)",
-        };
-      });
-
-      // Highlight de la case sélectionnée
-      highlights[square] = {
-        backgroundColor: "rgba(255, 255, 0, 0.4)",
-      };
-
-      setSelectedSquare(square);
-      setPossibleMoves(highlights);
+      // clic sur case vide sans sélection -> rien
     },
-    [game, selectedSquare]
+    [game, selectedSquare, makeMove]
   );
 
-  // Surbrillance du dernier coup
+  // style à appliquer aux pièces : surbrillance du dernier coup, pièces pouvant être capturées...
   const customSquareStyles = useMemo(() => {
-    const styles: Record<string, React.CSSProperties> = {
-      ...possibleMoves,
-    };
+    const styles: Record<string, React.CSSProperties> = {};
 
+    // pièce sélectionnée
+    if (selectedSquare) {
+      styles[selectedSquare] = {
+        backgroundColor: "rgba(255, 255, 0, 0.4)",
+      };
+    }
+
+    // coups possibles
+    for (const [square, move] of Object.entries(possibleMoves)) {
+      if (move.isCapture) {
+        styles[square] = {
+          boxShadow: "inset 0 0 0 2px rgba(200, 0, 0, 0.8)",
+          //  "radial-gradient(circle, transparent 60%, rgba(253, 0, 0, 0.6) 80%, transparent 85%)",
+        };
+      } else {
+        styles[square] = {
+          background: "radial-gradient(circle, rgba(239, 140, 2, 0.85) 10%, transparent 15%)",
+        };
+      }
+    }
+
+    // dernier coup
     if (lastMove) {
       styles[lastMove.from] = {
         backgroundColor: "rgba(255, 255, 0, 0.5)",
@@ -89,19 +120,37 @@ export default function ChessBoard() {
       };
     }
 
+    // highlight du roi en echec
+    // échec / échec et mat
+    if (game.isCheck()) {
+      const kingSquare = findKingSquare(game);
+      if (kingSquare) {
+        styles[kingSquare] = {
+          backgroundColor: game.isCheckmate()
+            ? "rgba(200, 0, 0, 0.75)" // MAT = rouge foncé
+            : "rgba(255, 0, 0, 0.45)", // ÉCHEC = rouge clair
+        };
+      }
+    }
+
     return styles;
-  }, [possibleMoves, lastMove]);
+  }, [selectedSquare, possibleMoves, lastMove]);
 
   // Déplacement d’une pièce
   const handlePieceDrop = useCallback(
     (sourceSquare: string, targetSquare: string) => {
       if (!targetSquare) return false;
+
+      const piece = game.get(sourceSquare as Square);
+
+      if (!piece || piece.color !== game.turn()) return false;
+
       setPossibleMoves({});
       setSelectedSquare(null);
 
-      return makeMove(sourceSquare, targetSquare);
+      return makeMove(sourceSquare as Square, targetSquare as Square);
     },
-    [makeMove]
+    [game, makeMove]
   );
 
   // Regroupement des coups par tour (blanc + noir)
@@ -125,6 +174,23 @@ export default function ChessBoard() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [currentMoveIndex, movesByTurn]);
+
+  // trouver la case du roi menacé
+  function findKingSquare(game: Chess): string | null {
+    const board = game.board();
+
+    for (let rank = 0; rank < 8; rank++) {
+      for (let file = 0; file < 8; file++) {
+        const piece = board[rank][file];
+        if (piece && piece.type === "k" && piece.color === game.turn()) {
+          const fileChar = "abcdefgh"[file];
+          const rankChar = (8 - rank).toString();
+          return `${fileChar}${rankChar}`;
+        }
+      }
+    }
+    return null;
+  }
 
   return (
     <div className="flex justify-center items-start gap-6 p-6">
@@ -254,6 +320,15 @@ export default function ChessBoard() {
             </tbody>
           </table>
         </div>
+        {game.isCheckmate() && (
+          <div className="mb-2 text-red-500 font-bold text-center">
+            ♚ Échec et mat — {game.turn() === "w" ? "Noirs" : "Blancs"} gagnent
+          </div>
+        )}
+
+        {!game.isCheckmate() && game.isCheck() && (
+          <div className="mb-2 text-yellow-400 font-semibold text-center">⚠ Échec</div>
+        )}
       </div>
     </div>
   );
