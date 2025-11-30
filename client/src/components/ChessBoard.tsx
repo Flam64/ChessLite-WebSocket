@@ -120,6 +120,19 @@ export default function ChessBoard() {
       };
     }
 
+    // highlight du roi en echec
+    // échec / échec et mat
+    if (game.isCheck()) {
+      const kingSquare = findKingSquare(game);
+      if (kingSquare) {
+        styles[kingSquare] = {
+          backgroundColor: game.isCheckmate()
+            ? "rgba(200, 0, 0, 0.75)" // MAT = rouge foncé
+            : "rgba(255, 0, 0, 0.45)", // ÉCHEC = rouge clair
+        };
+      }
+    }
+
     return styles;
   }, [selectedSquare, possibleMoves, lastMove]);
 
@@ -161,6 +174,23 @@ export default function ChessBoard() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [currentMoveIndex, movesByTurn]);
+
+  // trouver la case du roi menacé
+  function findKingSquare(game: Chess): string | null {
+    const board = game.board();
+
+    for (let rank = 0; rank < 8; rank++) {
+      for (let file = 0; file < 8; file++) {
+        const piece = board[rank][file];
+        if (piece && piece.type === "k" && piece.color === game.turn()) {
+          const fileChar = "abcdefgh"[file];
+          const rankChar = (8 - rank).toString();
+          return `${fileChar}${rankChar}`;
+        }
+      }
+    }
+    return null;
+  }
 
   return (
     <div className="flex justify-center items-start gap-6 p-6">
@@ -290,6 +320,15 @@ export default function ChessBoard() {
             </tbody>
           </table>
         </div>
+        {game.isCheckmate() && (
+          <div className="mb-2 text-red-500 font-bold text-center">
+            ♚ Échec et mat — {game.turn() === "w" ? "Noirs" : "Blancs"} gagnent
+          </div>
+        )}
+
+        {!game.isCheckmate() && game.isCheck() && (
+          <div className="mb-2 text-yellow-400 font-semibold text-center">⚠ Échec</div>
+        )}
       </div>
     </div>
   );
