@@ -5,6 +5,7 @@ import { Chessboard } from "react-chessboard";
 import { useChessGame } from "../hooks/useChessGame";
 import { Chess, Square, Move } from "chess.js";
 import type React from "react";
+import { buildCustomSquareStyles } from "../utils/chessStyles";
 
 export default function ChessBoard() {
   const {
@@ -87,78 +88,10 @@ export default function ChessBoard() {
   );
 
   // style à appliquer aux pièces : surbrillance du dernier coup, pièces pouvant être capturées...
+
   const customSquareStyles = useMemo(() => {
-    const styles: Record<string, React.CSSProperties> = {};
-
-    //
-    // 1) Pièce sélectionnée
-    //
-    if (selectedSquare) {
-      styles[selectedSquare] = {
-        ...(styles[selectedSquare] ?? {}),
-        backgroundColor: "rgba(255, 255, 0, 0.4)",
-      };
-    }
-
-    //
-    // 2) Coups possibles (capture ou simple)
-    //
-    for (const [square, move] of Object.entries(possibleMoves)) {
-      const base = styles[square] ?? {};
-
-      if (move.isCapture) {
-        styles[square] = {
-          ...base,
-          boxShadow: "inset 0 0 0 2px rgba(239, 140, 2, 0.85)",
-          borderRadius: "30%",
-        };
-      } else {
-        styles[square] = {
-          ...base,
-          background: "radial-gradient(circle, rgba(239, 140, 2, 0.85) 10%, transparent 15%)",
-        };
-      }
-    }
-
-    //
-    // 3) Dernier coup (ton style original)
-    //
-    if (lastMove) {
-      const lastColor = { backgroundColor: "rgba(255, 255, 0, 0.5)" };
-
-      styles[lastMove.from] = {
-        ...(styles[lastMove.from] ?? {}),
-        ...lastColor,
-      };
-
-      styles[lastMove.to] = {
-        ...(styles[lastMove.to] ?? {}),
-        ...lastColor,
-      };
-    }
-
-    //
-    // 4) Roi en échec / mat
-    //
-    if (game.isCheck()) {
-      const kingSquare = findKingSquare(game);
-      if (kingSquare) {
-        const base = styles[kingSquare] ?? {};
-        const isMate = game.isCheckmate();
-
-        styles[kingSquare] = {
-          ...base,
-          backgroundColor: isMate ? "rgba(180, 0, 0, 0.35)" : "rgba(255, 140, 0, 0.28)",
-          boxShadow: isMate
-            ? "0 0 20px 10px rgba(180,0,0,0.65), 0 0 12px rgba(180,0,0,0.8)"
-            : "0 0 18px 8px rgba(255,140,0,0.55), 0 0 10px rgba(255,140,0,0.75)",
-          borderRadius: "50%",
-        };
-      }
-    }
-
-    return styles;
-  }, [selectedSquare, possibleMoves, lastMove, game]);
+    return buildCustomSquareStyles(selectedSquare, possibleMoves, game);
+  }, [selectedSquare, possibleMoves, game]);
 
   // Déplacement d’une pièce
   const handlePieceDrop = useCallback(
