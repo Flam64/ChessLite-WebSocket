@@ -88,7 +88,6 @@ export default function ChessBoard() {
   );
 
   // style à appliquer aux pièces : surbrillance du dernier coup, pièces pouvant être capturées...
-
   const customSquareStyles = useMemo(() => {
     return buildCustomSquareStyles(selectedSquare, possibleMoves, game);
   }, [selectedSquare, possibleMoves, game]);
