@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Chess, Move } from "chess.js";
 
 type ChessMove = ReturnType<InstanceType<typeof Chess>["move"]>;
@@ -12,6 +12,7 @@ export function useChessGame() {
 
   /** Dernier coup joué (pour surlignage) */
   const [lastMove, setLastMove] = useState<Move | null>(null);
+
   /**
    * Partie reconstruite à partir de l'historique
    */
@@ -66,6 +67,15 @@ export function useChessGame() {
   };
 
   /** Navigation */
+
+  useEffect(() => {
+    if (currentMoveIndex > 0 && currentMoveIndex <= moves.length) {
+      setLastMove(moves[currentMoveIndex - 1]);
+    } else {
+      setLastMove(null);
+    }
+  }, [currentMoveIndex, moves]);
+
   const prevMove = () => setCurrentMoveIndex((i) => Math.max(0, i - 1));
   const nextMove = () => setCurrentMoveIndex((i) => Math.min(moves.length, i + 1));
   const goToStart = () => setCurrentMoveIndex(0);
