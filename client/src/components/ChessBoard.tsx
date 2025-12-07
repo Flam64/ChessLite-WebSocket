@@ -251,21 +251,28 @@ export default function ChessBoard() {
               {movesByTurn.map((turn, i) => {
                 const isLastRow = i === movesByTurn.length - 1;
 
+                // mise en surbrillance du coup séléctionné
+                const isSelected = currentMoveIndex === i * 2 + 1 || currentMoveIndex === i * 2 + 2;
+
                 return (
                   <tr
                     key={i}
                     className={`transition-all duration-200 ease-out
         ${isUndoing && isLastRow ? "opacity-0 translate-x-4" : "opacity-100 translate-x-0"}`}
                   >
-                    <td>{i + 1}</td>
+                    <td className="text-center">{i + 1}</td>
                     <td
-                      className="cursor-pointer hover:bg-gray-600"
+                      className={`cursor-pointer hover:bg-gray-600 ${
+                        currentMoveIndex === i * 2 + 1 ? "bg-blue-700" : ""
+                      }`}
                       onClick={() => goToMove(i * 2 + 1)} //rejouer les coups avec les blancs
                     >
                       {turn.white.san}
                     </td>
                     <td
-                      className="cursor-pointer hover:bg-gray-600"
+                      className={`cursor-pointer hover:bg-gray-600 ${
+                        currentMoveIndex === i * 2 + 2 ? "bg-blue-700" : ""
+                      }`}
                       onClick={() => turn.black && goToMove(i * 2 + 2)} //rejouer les coups avec les noirs
                     >
                       {turn.black?.san || ""}
