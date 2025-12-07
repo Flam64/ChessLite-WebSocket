@@ -20,6 +20,7 @@ export default function ChessBoard() {
     goToStart,
     goToEnd,
     undoLastMove,
+    selectedMove,
   } = useChessGame();
 
   type PossibleMove = {
@@ -89,8 +90,8 @@ export default function ChessBoard() {
 
   // style à appliquer aux pièces : surbrillance du dernier coup, pièces pouvant être capturées...
   const customSquareStyles = useMemo(() => {
-    return buildCustomSquareStyles(selectedSquare, possibleMoves, game);
-  }, [selectedSquare, possibleMoves, game]);
+    return buildCustomSquareStyles(selectedSquare, possibleMoves, game, lastMove, selectedMove);
+  }, [selectedSquare, possibleMoves, game, lastMove, selectedMove]);
 
   // Déplacement d’une pièce
   const handlePieceDrop = useCallback(
@@ -251,22 +252,29 @@ export default function ChessBoard() {
               {movesByTurn.map((turn, i) => {
                 const isLastRow = i === movesByTurn.length - 1;
 
+                // mise en surbrillance du coup séléctionné
+                const isSelected = currentMoveIndex === i * 2 + 1 || currentMoveIndex === i * 2 + 2;
+
                 return (
                   <tr
                     key={i}
                     className={`transition-all duration-200 ease-out
         ${isUndoing && isLastRow ? "opacity-0 translate-x-4" : "opacity-100 translate-x-0"}`}
                   >
-                    <td>{i + 1}</td>
+                    <td className="text-center">{i + 1}</td>
                     <td
-                      className="cursor-pointer hover:bg-gray-600"
-                      onClick={() => goToMove(i * 2)}
+                      className={`cursor-pointer hover:bg-gray-600 ${
+                        currentMoveIndex === i * 2 + 1 ? "bg-blue-700" : ""
+                      }`}
+                      onClick={() => goToMove(i * 2 + 1)} //rejouer les coups avec les blancs
                     >
                       {turn.white.san}
                     </td>
                     <td
-                      className="cursor-pointer hover:bg-gray-600"
-                      onClick={() => turn.black && goToMove(i * 2 + 1)}
+                      className={`cursor-pointer hover:bg-gray-600 ${
+                        currentMoveIndex === i * 2 + 2 ? "bg-blue-700" : ""
+                      }`}
+                      onClick={() => turn.black && goToMove(i * 2 + 2)} //rejouer les coups avec les noirs
                     >
                       {turn.black?.san || ""}
                     </td>

@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Chess } from "chess.js";
+import { useEffect, useMemo, useState } from "react";
+import { Chess, Move } from "chess.js";
 
 type ChessMove = ReturnType<InstanceType<typeof Chess>["move"]>;
 
@@ -11,7 +11,7 @@ export function useChessGame() {
   const [currentMoveIndex, setCurrentMoveIndex] = useState(0);
 
   /** Dernier coup joué (pour surlignage) */
-  const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
+  const [lastMove, setLastMove] = useState<Move | null>(null);
 
   /**
    * Partie reconstruite à partir de l'historique
@@ -40,7 +40,7 @@ export function useChessGame() {
 
     setMoves([...trimmedMoves, move]);
     setCurrentMoveIndex(trimmedMoves.length + 1);
-    setLastMove({ from: move.from, to: move.to });
+    setLastMove(move);
 
     return true;
   };
@@ -57,7 +57,7 @@ export function useChessGame() {
       // mettre à jour lastMove
       if (newMoves.length > 0) {
         const m = newMoves[newMoves.length - 1];
-        setLastMove({ from: m.from, to: m.to });
+        setLastMove(m);
       } else {
         setLastMove(null);
       }
@@ -67,12 +67,20 @@ export function useChessGame() {
   };
 
   /** Navigation */
+
+  useEffect(() => {
+    if (currentMoveIndex > 0 && currentMoveIndex <= moves.length) {
+      setLastMove(moves[currentMoveIndex - 1]);
+    } else {
+      setLastMove(null);
+    }
+  }, [currentMoveIndex, moves]);
+
   const prevMove = () => setCurrentMoveIndex((i) => Math.max(0, i - 1));
-
   const nextMove = () => setCurrentMoveIndex((i) => Math.min(moves.length, i + 1));
-
   const goToStart = () => setCurrentMoveIndex(0);
   const goToEnd = () => setCurrentMoveIndex(moves.length);
+  const selectedMove = currentMoveIndex > 0 ? moves[currentMoveIndex - 1] : null;
 
   const goToMove = (moveIndex: number) => {
     setCurrentMoveIndex(Math.max(0, Math.min(moves.length, moveIndex)));
@@ -80,7 +88,7 @@ export function useChessGame() {
     // mettre à jour lastMove si on est à la fin
     if (moveIndex > 0 && moveIndex <= moves.length) {
       const m = moves[moveIndex - 1];
-      setLastMove({ from: m.from, to: m.to });
+      setLastMove(m);
     } else {
       setLastMove(null);
     }
@@ -98,5 +106,6 @@ export function useChessGame() {
     goToEnd,
     goToMove,
     undoLastMove,
+    selectedMove,
   };
 }

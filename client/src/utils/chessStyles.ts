@@ -10,7 +10,9 @@ export type PossibleMovesMap = Record<
 export function buildCustomSquareStyles(
   selectedSquare: string | null,
   possibleMoves: PossibleMovesMap,
-  game: Chess
+  game: Chess,
+  lastMove: Move | null,
+  selectedMove: Move | null
 ): Record<string, React.CSSProperties> {
   const styles: Record<string, React.CSSProperties> = {};
 
@@ -25,14 +27,42 @@ export function buildCustomSquareStyles(
   for (const [square, move] of Object.entries(possibleMoves)) {
     if (move.isCapture) {
       styles[square] = {
+        ...(styles[square] ?? {}),
         boxShadow: "inset 0 0 0 2px rgba(239, 140, 2, 0.85)",
         borderRadius: "30%",
       };
     } else {
       styles[square] = {
+        ...(styles[square] ?? {}),
         background: "radial-gradient(circle, rgba(239, 140, 2, 0.85) 10%, transparent 15%)",
       };
     }
+  }
+
+  // lighlight du dernier coup joué (plateau)
+
+  // dernier coup joué
+  if (lastMove) {
+    styles[lastMove.from] = {
+      ...(styles[lastMove.from] ?? {}),
+      backgroundColor: "rgba(255, 255, 0, 0.5)",
+    };
+    styles[lastMove.to] = {
+      ...(styles[lastMove.to] ?? {}),
+      backgroundColor: "rgba(255, 255, 0, 0.5)",
+    };
+  }
+
+  // coup sélectionné dans l’historique
+  if (selectedMove) {
+    styles[selectedMove.from] = {
+      ...(styles[selectedMove.from] ?? {}),
+      backgroundColor: "rgba(255, 255, 0, 0.5)",
+    };
+    styles[selectedMove.to] = {
+      ...(styles[selectedMove.to] ?? {}),
+      backgroundColor: "rgba(255, 255, 0, 0.5)",
+    };
   }
 
   // 🎯 Roi en échec / mat
@@ -43,6 +73,7 @@ export function buildCustomSquareStyles(
       const isMate = game.isCheckmate();
 
       styles[kingSquare] = {
+        ...(styles[kingSquare] ?? {}),
         backgroundColor: isMate ? "rgba(180, 0, 0, 0.35)" : "rgba(255, 140, 0, 0.28)",
         boxShadow: isMate
           ? "0 0 20px 10px rgba(180,0,0,0.65), 0 0 12px rgba(180,0,0,0.8)"
