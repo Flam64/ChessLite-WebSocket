@@ -20,6 +20,7 @@ export default function ChessBoard() {
     goToStart,
     goToEnd,
     undoLastMove,
+    selectedMove,
   } = useChessGame();
 
   type PossibleMove = {
@@ -89,8 +90,8 @@ export default function ChessBoard() {
 
   // style à appliquer aux pièces : surbrillance du dernier coup, pièces pouvant être capturées...
   const customSquareStyles = useMemo(() => {
-    return buildCustomSquareStyles(selectedSquare, possibleMoves, game);
-  }, [selectedSquare, possibleMoves, game]);
+    return buildCustomSquareStyles(selectedSquare, possibleMoves, game, lastMove, selectedMove);
+  }, [selectedSquare, possibleMoves, game, lastMove, selectedMove]);
 
   // Déplacement d’une pièce
   const handlePieceDrop = useCallback(
