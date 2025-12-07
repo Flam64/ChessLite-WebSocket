@@ -260,13 +260,13 @@ export default function ChessBoard() {
                     <td>{i + 1}</td>
                     <td
                       className="cursor-pointer hover:bg-gray-600"
-                      onClick={() => goToMove(i * 2)}
+                      onClick={() => goToMove(i * 2 + 1)} //rejouer les coups avec les blancs
                     >
                       {turn.white.san}
                     </td>
                     <td
                       className="cursor-pointer hover:bg-gray-600"
-                      onClick={() => turn.black && goToMove(i * 2 + 1)}
+                      onClick={() => turn.black && goToMove(i * 2 + 2)} //rejouer les coups avec les noirs
                     >
                       {turn.black?.san || ""}
                     </td>
