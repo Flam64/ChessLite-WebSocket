@@ -165,7 +165,7 @@ export default function ChessBoard() {
       </div>
 
       {/* Historique et navigation */}
-      <div className="w-72 shadow rounded p-4 h-[600px]  flex flex-col">
+      <div className="w-96 shadow rounded p-4 h-[600px]  flex flex-col">
         {/* Boutons navigation */}
         <div className="flex gap-2 mb-4 justify-center">
           {/* Bouton annuler dernier coup */}
