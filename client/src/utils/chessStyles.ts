@@ -16,7 +16,7 @@ export function buildCustomSquareStyles(
 ): Record<string, React.CSSProperties> {
   const styles: Record<string, React.CSSProperties> = {};
 
-  // 🎯 Case sélectionnée
+  // Case sélectionnée
   if (selectedSquare) {
     styles[selectedSquare] = {
       backgroundColor: "rgba(255, 255, 0, 0.4)",
