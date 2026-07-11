@@ -1,8 +1,8 @@
 # ChessLite
 
-[![CI](https://img.shields.io/github/actions/workflow/status/celio-mozes-rocha/ChessLite/deploy.yml?branch=main)](https://github.com/celio-mozes-rocha/ChessLite-WebSocket/actions)
-[![License](https://img.shields.io/github/license/celio-mozes-rocha/ChessLite)](https://github.com/celio-mozes-rocha/ChessLite-WebSocket/blob/dev/LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/celio-mozes-rocha/ChessLite)](https://github.com/celio-mozes-rocha/ChessLite-WebSocket/commits/dev)
+[![CI](https://img.shields.io/github/actions/workflow/status/celio-mozes-rocha/ChessLite-WebSocket/deploy.yml?branch=main)](https://github.com/celio-mozes-rocha/ChessLite-WebSocket/actions)
+[![License](https://img.shields.io/github/license/celio-mozes-rocha/ChessLite-WebSocket)](https://github.com/celio-mozes-rocha/ChessLite-WebSocket/blob/dev/LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/celio-mozes-rocha/ChessLite-WebSocket)](https://github.com/celio-mozes-rocha/ChessLite-WebSocket/commits/dev)
 
 A modern chess application built with **React**, **TypeScript**, and **chess.js**.
 
