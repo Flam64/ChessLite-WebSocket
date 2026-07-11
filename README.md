@@ -1,8 +1,8 @@
 # ChessLite
 
 [![CI](https://img.shields.io/github/actions/workflow/status/celio-mozes-rocha/ChessLite/deploy.yml?branch=main)](https://github.com/celio-mozes-rocha/ChessLite/actions)
-[![License](https://img.shields.io/github/license/celio-mozes-rocha/ChessLite)](https://github.com/celio-mozes-rocha/ChessLite/blob/main/LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/celio-mozes-rocha/ChessLite)](https://github.com/celio-mozes-rocha/ChessLite/commits/main)
+[![License](https://img.shields.io/github/license/celio-mozes-rocha/ChessLite)](https://github.com/celio-mozes-rocha/ChessLite/blob/dev/LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/celio-mozes-rocha/ChessLite)](https://github.com/celio-mozes-rocha/ChessLite/commits/dev)
 
 A modern chess application built with **React**, **TypeScript**, and **chess.js**.
 
@@ -24,26 +24,26 @@ Coming soon.
 
 # Features
 
-- ♟️ Complete chess game powered by **chess.js**
-- 🖱️ Drag & Drop
-- 🎯 Click-to-Move
-- ✅ Legal move validation
-- 🚫 Illegal move prevention
-- 📜 Interactive move history
-- ⏮️ Move navigation
+- Complete chess game powered by **chess.js**
+- Drag & Drop
+- Click-to-Move
+- Legal move validation
+- Illegal move prevention
+- Interactive move history
+- Move navigation
   - First move
   - Previous move
   - Next move
   - Last move
-- ↩️ Undo last move
-- 🎨 Selected piece highlighting
-- 🎯 Legal moves highlighting
-- ⚔️ Capture highlighting
-- ✨ Last move highlighting
-- 📖 History move highlighting
-- 👑 Check detection
-- ☠️ Checkmate detection
-- 🚨 King highlighting when in check or checkmate
+- Undo last move
+- Selected piece highlighting
+- Legal moves highlighting
+- Capture highlighting
+- Last move highlighting
+- History move highlighting
+- Check detection
+- Checkmate detection
+- King highlighting when in check or checkmate
 
 ---
 
@@ -269,8 +269,6 @@ This project was built to:
 
 ---
 
-# License
+## License
 
-This project is licensed under the MIT License.
-
-See the **LICENSE** file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
