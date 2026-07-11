@@ -16,14 +16,14 @@ export function buildCustomSquareStyles(
 ): Record<string, React.CSSProperties> {
   const styles: Record<string, React.CSSProperties> = {};
 
-  // 🎯 Case sélectionnée
+  // Case sélectionnée
   if (selectedSquare) {
     styles[selectedSquare] = {
       backgroundColor: "rgba(255, 255, 0, 0.4)",
     };
   }
 
-  // 🎯 Coups possibles
+  // Coups possibles
   for (const [square, move] of Object.entries(possibleMoves)) {
     if (move.isCapture) {
       styles[square] = {
@@ -65,7 +65,7 @@ export function buildCustomSquareStyles(
     };
   }
 
-  // 🎯 Roi en échec / mat
+  // The king is in check or checkmate
   if (game.isCheck()) {
     const kingSquare = findKingSquare(game);
 
@@ -87,7 +87,7 @@ export function buildCustomSquareStyles(
 }
 
 /**
- * Trouve la case du roi dont c’est le tour
+ * Find the square of the king for the side to move
  */
 export function findKingSquare(game: Chess): string | null {
   const board = game.board();
